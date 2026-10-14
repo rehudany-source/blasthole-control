@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BlastHole">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>BlastHole Control</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f172a;color:#fff;font-family:-apple-system,"Segoe UI",Roboto,sans-serif}
+  .c{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;box-sizing:border-box}
+  .c img{width:96px;height:96px;border-radius:22px}
+  .c b{font-size:22px}.c span{opacity:.75;font-size:15px}
+</style>
+</head>
+<body>
+<div class="c"><img src="icon-180.png" alt=""><b>BlastHole Control</b><span id="m">Abriendo…</span></div>
+<script>
+/* BlastHole Control · iPhone / iPad (GitHub Pages)
+   Este archivo es solo el "arrancador". La app es la misma versión de campo
+   que usan los celulares Android:
+   - app.html  = versión que se subió a GitHub (respaldo).
+   - Si la app descargó una versión más nueva desde Supabase (la que se publica
+     para Android), queda guardada en este iPhone y se usa esa.
+   Así el iPhone se actualiza solo, sin volver a subir nada a GitHub. */
+(function () {
+  var CLAVE = 'bhc_ios_app_html', CLAVE_V = 'bhc_ios_app_version';
+  var msg = document.getElementById('m');
+  function versionDe(html) { var m = /^const VERSION_APP = (\d+);/m.exec(html || ''); return m ? Number(m[1]) : 0; }
+  function plataformaDe(html) { var m = /^const PLATAFORMA_APP = '(\w+)';/m.exec(html || ''); return m ? m[1] : ''; }
+  var versionBase = 0;
+
+  // Puente con la app (los mismos nombres que usa la APK de Android para actualizarse).
+  window.AndroidBridge = {
+    instalarActualizacion: function (html, v) {
+      if (plataformaDe(html) !== 'android' || versionDe(html) !== Number(v)) return 'El archivo no es válido';
+      try { localStorage.setItem(CLAVE, html); localStorage.setItem(CLAVE_V, String(v)); return 'ok'; }
+      catch (e) { return 'No hay espacio en el iPhone para la actualización (' + (e && e.name || e) + ')'; }
+    },
+    versionApk: function () { return versionBase; },
+    restaurarVersionOriginal: function () { try { localStorage.removeItem(CLAVE); localStorage.removeItem(CLAVE_V); } catch (_) {} return 'ok'; }
+  };
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+
+  function abrir(html) {
+    document.open(); document.write(html); document.close();
+  }
+  fetch('app.html', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .catch(function () { return caches.match('app.html').then(function (r) { return r ? r.text() : ''; }); })
+    .then(function (base) {
+      versionBase = versionDe(base);
+      var guardada = null;
+      try { guardada = localStorage.getItem(CLAVE); } catch (_) {}
+      var vg = versionDe(guardada);
+      if (guardada && vg > versionBase) return abrir(guardada);
+      if (guardada && vg <= versionBase) { try { localStorage.removeItem(CLAVE); localStorage.removeItem(CLAVE_V); } catch (_) {} }
+      if (base) return abrir(base);
+      msg.textContent = 'No se pudo abrir la app. Conéctese a internet una vez para descargarla.';
+    });
+})();
+</script>
+</body>
+</html>

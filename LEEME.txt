@@ -1,0 +1,25 @@
+BLASTHOLE CONTROL · iPhone / iPad (GitHub Pages)
+================================================
+Es la misma app de campo que usan los celulares Android.
+
+SUBIR A GITHUB (una sola vez)
+  1. En github.com (cuenta rehudany-source) cree un repositorio nuevo:
+     blasthole-control  (Public).
+  2. "Add file" → "Upload files" → suba TODOS estos archivos
+     (index.html, app.html, sw.js, manifest.webmanifest, icon-180.png,
+     icon-192.png, icon-512.png) → "Commit changes".
+  3. Settings → Pages → Branch: main, carpeta / (root) → Save.
+  4. A los 1–2 minutos queda en:
+     https://rehudany-source.github.io/blasthole-control/
+
+INSTALAR EN EL IPHONE
+  1. Abra esa dirección en Safari (con señal).
+  2. Compartir → "Agregar a pantalla de inicio" → Agregar.
+  3. Abra la app desde el ícono BlastHole e ingrese con su usuario.
+     La primera vez pedirá permiso de cámara para escanear.
+
+ACTUALIZACIONES
+  No hay que volver a subir nada a GitHub. Cada versión que se publica
+  para Android (Administración → Actualización automática) también llega
+  al iPhone: se descarga sola al abrir la app en el Inicio con señal.
+  Sin señal en mina, la app abre con la última versión guardada.
